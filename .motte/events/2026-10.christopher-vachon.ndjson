@@ -116,3 +116,6 @@
 {"at":"2026-10-21T13:57:42Z","id":19,"by":"Christopher Vachon","as":"user","type":"state","from":"Todo","to":"In Progress"}
 {"at":"2026-10-21T13:57:42Z","id":19,"by":"Christopher Vachon","as":"user","type":"assigned","from":null,"to":"Christopher Vachon"}
 {"at":"2026-10-21T13:58:06Z","id":19,"by":"Christopher Vachon","as":"user","type":"state","from":"In Progress","to":"Done"}
+{"at":"2026-10-21T13:58:09Z","id":20,"by":"Christopher Vachon","as":"user","type":"state","from":"Todo","to":"In Progress"}
+{"at":"2026-10-21T13:58:09Z","id":20,"by":"Christopher Vachon","as":"user","type":"assigned","from":null,"to":"Christopher Vachon"}
+{"at":"2026-10-21T13:59:00Z","id":20,"by":"Christopher Vachon","as":"user","type":"state","from":"In Progress","to":"Done"}
