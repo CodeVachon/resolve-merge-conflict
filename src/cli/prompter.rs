@@ -99,7 +99,7 @@ impl Prompter for InquirePrompter {
     }
 
     fn edit(&mut self, question: &str, initial: &str) -> Result<String> {
-        let mut editor = Editor::new(question)
+        let editor = Editor::new(question)
             .with_predefined_text(initial)
             .with_file_extension(".md");
         let command = resolve_editor(
