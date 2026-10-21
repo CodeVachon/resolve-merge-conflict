@@ -9,6 +9,7 @@ pub mod conflicts;
 pub mod git;
 pub mod models;
 pub mod prompt;
+pub mod runner;
 pub mod verify;
 
 /// The version reported by `--version`, baked in from Cargo.toml at compile time.
