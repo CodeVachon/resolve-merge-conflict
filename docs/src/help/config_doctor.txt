@@ -1,0 +1,13 @@
+Validate the config file; exit 1 if a run would fail
+
+Usage: doctor [OPTIONS]
+
+Options:
+  -f, --config <FILE>
+          
+
+      --json
+          Machine-readable output
+
+  -h, --help
+          Print help

@@ -1,0 +1,13 @@
+Print a shell completion script
+
+Usage: completion <SHELL>
+
+Arguments:
+  <SHELL>
+          bash, zsh, fish, elvish or powershell
+          
+          [possible values: bash, elvish, fish, powershell, zsh]
+
+Options:
+  -h, --help
+          Print help

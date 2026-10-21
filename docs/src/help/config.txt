@@ -1,0 +1,13 @@
+Inspect and manage the config file
+
+Usage: config <COMMAND>
+
+Commands:
+  path    Print the config file in effect and the rule that chose it
+  doctor  Validate the config file; exit 1 if a run would fail
+  init    Write a starter config file (existing files are kept unless --force)
+  help    Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help
+          Print help

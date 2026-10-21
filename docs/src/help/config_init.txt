@@ -1,0 +1,13 @@
+Write a starter config file (existing files are kept unless --force)
+
+Usage: init [OPTIONS]
+
+Options:
+      --force
+          Overwrite an existing file
+
+  -f, --config <FILE>
+          
+
+  -h, --help
+          Print help

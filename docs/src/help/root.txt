@@ -1,0 +1,55 @@
+Resolve git merge conflicts with a CLI agent (Claude Code or Codex).
+
+Run it in a repository that is stopped on conflicts. It asks which agent and model to use, shows you the prompt so you can amend it, lets the agent edit the conflicted files, then stages what was resolved and reports what happened. It never commits or pushes.
+
+Usage: resolve-merge-conflicts [OPTIONS] [COMMAND]
+
+Commands:
+  config      Inspect and manage the config file
+  upgrade     Update resolve-merge-conflicts in place, or check whether an update is available
+  versions    List installed versions; `remove` and `prune` delete old ones
+  use         Switch to an installed version, downloading it first if needed
+  uninstall   Remove the managed installation from this machine
+  completion  Print a shell completion script
+  help        Print this message or the help of the given subcommand(s)
+
+Options:
+  -c, --cwd <DIR>
+          Working directory of the repository [default: current]
+
+  -a, --agent <AGENT>
+          Agent to use: claude or codex
+          
+          [env: RESOLVE_MERGE_CONFLICTS_AGENT=]
+
+  -m, --model <MODEL>
+          Model to use, as the agent names it
+          
+          [env: RESOLVE_MERGE_CONFLICTS_MODEL=]
+
+  -y, --yes
+          Answer every question with its default and send the prompt without review
+
+      --no-edit
+          Show the prompt but do not offer to edit it
+
+      --dry-run
+          Build and show the prompt, then stop without running the agent
+
+      --prompt-file <FILE>
+          Use the prompt template in this file instead of the configured one
+
+      --no-stage
+          Leave resolved files unstaged (by default they are `git add`ed)
+
+  -f, --config <FILE>
+          Config file to use instead of the one in your home directory
+
+      --json
+          Print the final report as JSON instead of text
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version

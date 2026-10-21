@@ -1,0 +1,21 @@
+[book]
+title = "resolve-merge-conflicts"
+description = "Resolve git merge conflicts with a CLI agent, then review the result yourself."
+authors = ["Christopher Vachon"]
+language = "en"
+src = "src"
+
+[output.html]
+git-repository-url = "https://github.com/CodeVachon/resolve-merge-conflict"
+edit-url-template = "https://github.com/CodeVachon/resolve-merge-conflict/edit/main/docs/{path}"
+site-url = "/resolve-merge-conflict/"
+default-theme = "light"
+preferred-dark-theme = "navy"
+
+[output.html.search]
+enable = true
+limit-results = 20
+
+[output.html.fold]
+enable = true
+level = 1

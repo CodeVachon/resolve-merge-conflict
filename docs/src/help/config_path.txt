@@ -1,0 +1,10 @@
+Print the config file in effect and the rule that chose it
+
+Usage: path [OPTIONS]
+
+Options:
+  -f, --config <FILE>
+          Config file to use instead of the default location
+
+  -h, --help
+          Print help
