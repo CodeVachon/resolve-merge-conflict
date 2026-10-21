@@ -34,6 +34,11 @@ pub trait Prompter {
     fn show(&mut self, title: &str, body: &str);
     /// A status or warning line.
     fn info(&mut self, message: &str);
+    /// Show that something slow is running until the returned guard is dropped.
+    fn working(&mut self, message: &str) -> Box<dyn std::any::Any> {
+        self.info(message);
+        Box::new(())
+    }
 }
 
 /// The outside world, replaceable in tests.
@@ -61,7 +66,7 @@ impl Deps<'static> {
             make_agent: &real_agent,
             installed: &|name| {
                 real_agent(name)
-                    .map(|agent| agent::is_installed(agent.binary()))
+                    .map(|agent| agent::program_available(agent.program()))
                     .unwrap_or(false)
             },
             model_options: &models::options,
@@ -195,7 +200,7 @@ pub fn run(
     }
 
     let snapshot = Snapshot::take(&mut git)?;
-    prompter.info(&format!("Running {} ({})...", plan.agent, plan.model));
+    let busy = prompter.working(&format!("Running {} ({})", plan.agent, plan.model));
     let outcome = agent::run(
         agent.as_ref(),
         &AgentRequest {
@@ -204,7 +209,9 @@ pub fn run(
             cwd: root.clone(),
         },
     )
-    .with_context(|| format!("{} did not run", plan.agent))?;
+    .with_context(|| format!("{} did not run", plan.agent));
+    drop(busy);
+    let outcome = outcome?;
 
     let stage = options.stage.unwrap_or_else(|| config.auto_stage());
     let verification = verify::verify_and_stage(&mut git, &state, &snapshot, stage)?;

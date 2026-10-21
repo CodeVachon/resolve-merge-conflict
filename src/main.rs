@@ -2,12 +2,13 @@
 
 use clap::Parser;
 use resolve_merge_conflicts::cli::{self, Cli, Command};
+use resolve_merge_conflicts::ui;
 
 fn main() {
     let cli = Cli::parse();
 
     let result = match cli.command {
-        None => Err(anyhow::anyhow!("the interactive flow is not wired up yet")),
+        None => cli::run_interactive(&cli.run),
         Some(Command::Completion { shell }) => {
             cli::print_completion(shell);
             Ok(0)
@@ -21,7 +22,7 @@ fn main() {
         Ok(0) => {}
         Ok(code) => std::process::exit(code),
         Err(error) => {
-            eprintln!("Error: {error:#}");
+            eprintln!("{}", ui::error_block(&format!("{error:#}")));
             std::process::exit(1);
         }
     }

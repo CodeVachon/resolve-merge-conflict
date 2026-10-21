@@ -76,6 +76,10 @@ impl Agent for ClaudeAgent {
         "claude"
     }
 
+    fn program(&self) -> &std::path::Path {
+        &self.program
+    }
+
     fn binary(&self) -> &'static str {
         "claude"
     }

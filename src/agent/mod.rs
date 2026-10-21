@@ -56,6 +56,9 @@ pub trait Agent {
     /// The executable looked up on `PATH` (unless overridden).
     fn binary(&self) -> &'static str;
 
+    /// The program actually run: `binary()`, or the override from the environment.
+    fn program(&self) -> &Path;
+
     /// How to run `request`.
     fn invocation(&self, request: &AgentRequest) -> Invocation;
 
@@ -120,6 +123,15 @@ pub fn is_installed(binary: &str) -> bool {
     find_on_path(binary).is_some()
 }
 
+/// Whether `program` can be run: an executable file if it has a directory part, else on `PATH`.
+pub fn program_available(program: &Path) -> bool {
+    if program.components().count() > 1 {
+        is_executable(program)
+    } else {
+        find_on_path(&program.to_string_lossy()).is_some()
+    }
+}
+
 fn find_on_path(binary: &str) -> Option<PathBuf> {
     let path = std::env::var_os("PATH")?;
     std::env::split_paths(&path)
@@ -142,7 +154,7 @@ fn is_executable(path: &Path) -> bool {
 
 /// Fail with a clear message when `agent`'s binary is missing.
 pub fn ensure_installed(agent: &dyn Agent) -> Result<()> {
-    if is_installed(agent.binary()) {
+    if program_available(agent.program()) {
         Ok(())
     } else {
         bail!(

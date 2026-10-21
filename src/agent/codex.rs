@@ -52,6 +52,10 @@ impl Agent for CodexAgent {
         "codex"
     }
 
+    fn program(&self) -> &std::path::Path {
+        &self.program
+    }
+
     fn binary(&self) -> &'static str {
         "codex"
     }

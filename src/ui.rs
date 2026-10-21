@@ -88,6 +88,61 @@ pub fn error_block(message: &str) -> String {
     format!("{heading}: {message}")
 }
 
+/// A line on stderr that shows elapsed time while something slow runs. Does nothing unless stderr
+/// is a terminal, so logs and pipes stay clean. Stops when dropped.
+pub struct Spinner {
+    stop: Option<std::sync::mpsc::Sender<()>>,
+    handle: Option<std::thread::JoinHandle<()>>,
+}
+
+impl Spinner {
+    pub fn start(message: &str) -> Self {
+        if !std::io::stderr().is_terminal() {
+            eprintln!("{message}...");
+            return Self {
+                stop: None,
+                handle: None,
+            };
+        }
+        let (stop, rx) = std::sync::mpsc::channel::<()>();
+        let message = message.to_string();
+        let handle = std::thread::spawn(move || {
+            let frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+            let started = std::time::Instant::now();
+            let mut tick = 0;
+            while rx
+                .recv_timeout(std::time::Duration::from_millis(100))
+                .is_err()
+            {
+                let elapsed = started.elapsed().as_secs();
+                eprint!(
+                    "\r{} {message} ({}m{:02}s)  ",
+                    frames[tick % frames.len()],
+                    elapsed / 60,
+                    elapsed % 60
+                );
+                tick += 1;
+            }
+            eprint!("\r{}\r", " ".repeat(message.len() + 24));
+        });
+        Self {
+            stop: Some(stop),
+            handle: Some(handle),
+        }
+    }
+}
+
+impl Drop for Spinner {
+    fn drop(&mut self) {
+        if let Some(stop) = self.stop.take() {
+            let _ = stop.send(());
+        }
+        if let Some(handle) = self.handle.take() {
+            let _ = handle.join();
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

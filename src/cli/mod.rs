@@ -1,5 +1,6 @@
 //! The command line: flags, subcommands, and the pieces that run them.
 
+pub mod interactive;
 pub mod prompter;
 
 use std::path::PathBuf;
@@ -8,6 +9,8 @@ use clap::{Args, CommandFactory, Parser, Subcommand};
 use clap_complete::Shell;
 
 use crate::runner::Options;
+
+pub use interactive::run_interactive;
 
 /// Resolve git merge conflicts with a CLI agent (Claude Code or Codex).
 ///

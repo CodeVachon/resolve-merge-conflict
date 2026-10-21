@@ -25,6 +25,9 @@ impl Agent for FakeAgent {
     fn binary(&self) -> &'static str {
         "claude"
     }
+    fn program(&self) -> &std::path::Path {
+        std::path::Path::new("sh")
+    }
     fn invocation(&self, request: &AgentRequest) -> Invocation {
         Invocation {
             program: "sh".into(),

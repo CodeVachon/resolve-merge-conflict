@@ -31,12 +31,22 @@ pub fn is_interactive() -> bool {
 
 pub struct InquirePrompter {
     editor: Option<String>,
+    /// Send status text to stderr, keeping stdout free for `--json`.
+    to_stderr: bool,
 }
 
 impl InquirePrompter {
     /// `editor` is the config's `editor`; otherwise `$VISUAL`, then `$EDITOR`.
-    pub fn new(editor: Option<String>) -> Self {
-        Self { editor }
+    pub fn new(editor: Option<String>, to_stderr: bool) -> Self {
+        Self { editor, to_stderr }
+    }
+
+    fn say(&self, text: &str) {
+        if self.to_stderr {
+            eprintln!("{text}");
+        } else {
+            println!("{text}");
+        }
     }
 }
 
@@ -86,11 +96,15 @@ impl Prompter for InquirePrompter {
     }
 
     fn show(&mut self, title: &str, body: &str) {
-        println!("{}", ui::block(title, body));
+        self.say(&ui::block(title, body));
     }
 
     fn info(&mut self, message: &str) {
-        println!("{message}");
+        self.say(message);
+    }
+
+    fn working(&mut self, message: &str) -> Box<dyn std::any::Any> {
+        Box::new(ui::Spinner::start(message))
     }
 }
 
