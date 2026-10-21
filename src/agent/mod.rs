@@ -8,6 +8,7 @@
 //! tool afterwards, and no agent is ever given a way to commit, push, or continue an operation.
 
 pub mod claude;
+pub mod codex;
 
 use std::io::Write;
 use std::path::{Path, PathBuf};
@@ -32,6 +33,9 @@ pub struct Invocation {
     pub args: Vec<String>,
     pub stdin: String,
     pub cwd: PathBuf,
+    /// A file the agent writes its final message to, read after it exits in place of stdout.
+    /// Removed once read.
+    pub output_file: Option<PathBuf>,
 }
 
 /// What came back from an agent run.
@@ -88,7 +92,15 @@ pub fn run(agent: &dyn Agent, request: &AgentRequest) -> Result<AgentOutcome> {
     let output = child.wait_with_output().context("waiting for the agent")?;
     let _ = writer.join();
 
-    let stdout = String::from_utf8_lossy(&output.stdout);
+    let mut stdout = String::from_utf8_lossy(&output.stdout).into_owned();
+    if let Some(file) = &invocation.output_file {
+        if let Ok(contents) = std::fs::read_to_string(file)
+            && !contents.trim().is_empty()
+        {
+            stdout = contents;
+        }
+        let _ = std::fs::remove_file(file);
+    }
     let parsed = agent.parse_output(&stdout);
     Ok(AgentOutcome {
         success: output.status.success() && !parsed.is_error,

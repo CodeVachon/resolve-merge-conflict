@@ -104,6 +104,7 @@ impl Agent for ClaudeAgent {
             // trailing positional prompt.
             stdin: request.prompt.clone(),
             cwd: request.cwd.clone(),
+            output_file: None,
         }
     }
 
