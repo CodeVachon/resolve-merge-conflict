@@ -6,6 +6,7 @@
 pub mod agent;
 pub mod conflicts;
 pub mod git;
+pub mod verify;
 
 /// The version reported by `--version`, baked in from Cargo.toml at compile time.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

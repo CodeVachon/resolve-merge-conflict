@@ -259,9 +259,9 @@ impl Git {
         parse_unmerged(&output)
     }
 
-    /// Paths with changes that are not conflicts: staged or unstaged edits git knows about.
+    /// Paths with changes that are not conflicts: staged or unstaged edits, and untracked files.
     pub fn other_changes(&mut self) -> Result<Vec<String>, GitError> {
-        let output = self.call(&["status", "--porcelain=v2", "-z", "--untracked-files=no"])?;
+        let output = self.call(&["status", "--porcelain=v2", "-z", "--untracked-files=all"])?;
         Ok(parse_other_changes(&output))
     }
 
@@ -363,6 +363,8 @@ fn parse_other_changes(output: &str) -> Vec<String> {
             if let Some(path) = rest.splitn(9, ' ').nth(8) {
                 paths.push(path.to_string());
             }
+        } else if let Some(path) = record.strip_prefix("? ") {
+            paths.push(path.to_string());
         }
     }
     paths.sort();
@@ -404,9 +406,12 @@ mod tests {
     fn other_changes_skip_conflicts_and_handle_renames() {
         let output = format!(
             "{UU}\01 .M N... 100644 100644 100644 aaa bbb docs/readme.md\0\
-             2 R. N... 100644 100644 100644 aaa bbb R100 new.txt\0old.txt\0"
+             2 R. N... 100644 100644 100644 aaa bbb R100 new.txt\0old.txt\0? scratch.txt\0"
         );
-        assert_eq!(parse_other_changes(&output), ["docs/readme.md", "new.txt"]);
+        assert_eq!(
+            parse_other_changes(&output),
+            ["docs/readme.md", "new.txt", "scratch.txt"]
+        );
     }
 
     #[test]
