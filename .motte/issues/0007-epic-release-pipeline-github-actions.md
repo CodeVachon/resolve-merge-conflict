@@ -1,10 +1,10 @@
 ---
 id: 7
 title: "Epic: Release pipeline (GitHub Actions)"
-state: Todo
+state: Done
 labels: [release]
 created: 2026-10-21T13:40:41Z
-updated: 2026-10-21T13:40:41Z
+updated: 2026-10-21T14:46:35Z
 ---
 
 ## Description
