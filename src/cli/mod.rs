@@ -1,5 +1,7 @@
 //! The command line: flags, subcommands, and the pieces that run them.
 
+pub mod prompter;
+
 use std::path::PathBuf;
 
 use clap::{Args, CommandFactory, Parser, Subcommand};
