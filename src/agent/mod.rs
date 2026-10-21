@@ -76,13 +76,14 @@ pub struct ParsedOutput {
 /// Run `agent` for `request` and wait for it to finish.
 pub fn run(agent: &dyn Agent, request: &AgentRequest) -> Result<AgentOutcome> {
     let invocation = agent.invocation(request);
-    let mut child = Command::new(&invocation.program)
+    let mut command = Command::new(&invocation.program);
+    command
         .args(&invocation.args)
         .current_dir(&invocation.cwd)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
+        .stderr(Stdio::piped());
+    let mut child = spawn_retrying(&mut command)
         .with_context(|| format!("could not start {}", invocation.program.display()))?;
 
     // Feed the prompt on a thread: a prompt larger than the pipe buffer would otherwise deadlock
@@ -111,6 +112,26 @@ pub fn run(agent: &dyn Agent, request: &AgentRequest) -> Result<AgentOutcome> {
         final_message: parsed.final_message,
         stderr: String::from_utf8_lossy(&output.stderr).into_owned(),
     })
+}
+
+/// Spawn `command`, retrying briefly on "text file busy".
+///
+/// Linux can refuse to exec a file that another process still holds open for writing, even after
+/// the writer has closed it: an agent that was just installed or updated, or a script a test has
+/// just written while a sibling thread was forking. It clears within milliseconds.
+pub fn spawn_retrying(command: &mut Command) -> std::io::Result<std::process::Child> {
+    let mut attempts = 0;
+    loop {
+        match command.spawn() {
+            Err(error)
+                if error.kind() == std::io::ErrorKind::ExecutableFileBusy && attempts < 40 =>
+            {
+                attempts += 1;
+                std::thread::sleep(std::time::Duration::from_millis(25));
+            }
+            result => return result,
+        }
+    }
 }
 
 /// The agents this tool knows, by name.

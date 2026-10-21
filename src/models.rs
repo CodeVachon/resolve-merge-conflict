@@ -117,12 +117,13 @@ pub fn parse_codex_catalog(json: &str) -> Result<Vec<String>> {
 
 /// Run `<program> debug models` and parse it, giving up after ten seconds.
 pub fn discover_codex(program: &Path) -> Result<Vec<String>> {
-    let mut child = Command::new(program)
+    let mut command = Command::new(program);
+    command
         .args(["debug", "models"])
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn()
+        .stderr(Stdio::null());
+    let mut child = crate::agent::spawn_retrying(&mut command)
         .with_context(|| format!("could not start {}", program.display()))?;
 
     let mut stdout = child.stdout.take().context("no stdout")?;
