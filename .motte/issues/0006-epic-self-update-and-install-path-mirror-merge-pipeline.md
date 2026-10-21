@@ -1,10 +1,10 @@
 ---
 id: 6
 title: "Epic: Self-update and install path (mirror merge-pipeline)"
-state: Todo
+state: Done
 labels: [self-update]
 created: 2026-10-21T13:40:40Z
-updated: 2026-10-21T13:40:40Z
+updated: 2026-10-21T14:24:44Z
 ---
 
 ## Description

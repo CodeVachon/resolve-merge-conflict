@@ -1,10 +1,10 @@
 ---
 id: 4
 title: "Epic: Interactive CLI"
-state: Todo
+state: Done
 labels: [cli]
 created: 2026-10-21T13:40:40Z
-updated: 2026-10-21T13:40:40Z
+updated: 2026-10-21T14:24:44Z
 ---
 
 ## Description

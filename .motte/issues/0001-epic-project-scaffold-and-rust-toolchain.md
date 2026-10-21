@@ -1,10 +1,10 @@
 ---
 id: 1
 title: "Epic: Project scaffold and Rust toolchain"
-state: Todo
+state: Done
 labels: [scaffold]
 created: 2026-10-21T13:40:26Z
-updated: 2026-10-21T13:40:40Z
+updated: 2026-10-21T14:24:44Z
 ---
 
 ## Description

@@ -1,10 +1,10 @@
 ---
 id: 3
 title: "Epic: User config in the home directory"
-state: Todo
+state: Done
 labels: [config]
 created: 2026-10-21T13:40:40Z
-updated: 2026-10-21T13:40:40Z
+updated: 2026-10-21T14:24:44Z
 ---
 
 ## Description
