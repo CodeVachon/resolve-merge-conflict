@@ -9,6 +9,8 @@ use std::fmt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+use serde::Serialize;
+
 /// Errors from running git.
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum GitError {
@@ -96,7 +98,8 @@ pub fn render_args(args: &[String]) -> String {
 
 /// How a path is unmerged, from the two-letter `XY` code of a porcelain v2 `u` line
 /// (X is "ours" vs the merge base, Y is "theirs").
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum ConflictKind {
     /// `UU`: both sides modified the file.
     BothModified,

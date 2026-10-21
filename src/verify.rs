@@ -8,12 +8,14 @@ use std::collections::BTreeMap;
 use std::hash::{DefaultHasher, Hash, Hasher};
 
 use anyhow::Result;
+use serde::Serialize;
 
 use crate::conflicts::ConflictState;
 use crate::git::{ConflictKind, Git, Stage};
 
 /// How the final content relates to the two sides, for the report.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum Strategy {
     /// Identical to "ours".
     Ours,
@@ -25,7 +27,8 @@ pub enum Strategy {
     Deleted,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum FileStatus {
     /// Free of conflict markers (or deleted where a deletion is a valid resolution).
     Resolved,

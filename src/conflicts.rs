@@ -3,11 +3,13 @@
 //! This only reads state. It never starts, continues or aborts anything.
 
 use anyhow::{Result, bail};
+use serde::Serialize;
 
 use crate::git::{Git, UnmergedEntry};
 
 /// The git operation that stopped on conflicts.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum Operation {
     Merge,
     Rebase,
