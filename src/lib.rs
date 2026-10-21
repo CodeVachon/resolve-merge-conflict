@@ -11,6 +11,7 @@ pub mod git;
 pub mod models;
 pub mod prompt;
 pub mod runner;
+pub mod summary;
 pub mod ui;
 pub mod verify;
 

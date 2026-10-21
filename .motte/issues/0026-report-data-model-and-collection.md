@@ -1,12 +1,13 @@
 ---
 id: 26
 title: Report data model and collection
-state: Todo
+state: In Progress
 parent: 5
+assignee: Christopher Vachon
 labels: [report]
 blockedBy: [17]
 created: 2026-10-21T13:41:15Z
-updated: 2026-10-21T13:41:33Z
+updated: 2026-10-21T14:03:39Z
 ---
 
 ## Plan
