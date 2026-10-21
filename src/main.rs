@@ -13,9 +13,17 @@ fn main() {
             cli::print_completion(shell);
             Ok(0)
         }
-        Some(Command::Config { .. }) => {
-            Err(anyhow::anyhow!("config commands are not wired up yet"))
-        }
+        Some(Command::Config { command }) => match command {
+            cli::ConfigCommand::Path { config } => {
+                cli::config_cmd::run_path(config.as_deref()).map(|()| 0)
+            }
+            cli::ConfigCommand::Doctor { config, json } => {
+                cli::config_cmd::run_doctor(config.as_deref(), json)
+            }
+            cli::ConfigCommand::Init { force, config } => {
+                cli::config_cmd::run_init(config.as_deref(), force).map(|()| 0)
+            }
+        },
     };
 
     match result {
