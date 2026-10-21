@@ -10,6 +10,7 @@ pub mod conflicts;
 pub mod git;
 pub mod models;
 pub mod prompt;
+pub mod render;
 pub mod report;
 pub mod runner;
 pub mod summary;

@@ -132,3 +132,155 @@ fn serialises_to_json_with_snake_case_names() {
     assert_eq!(json["operation"], "merge");
     assert_eq!(json["agent"], "claude");
 }
+
+mod mismatches {
+    use super::*;
+    use resolve_merge_conflicts::render;
+    use resolve_merge_conflicts::report::Mismatch;
+
+    fn with(message: &str, files: Vec<FileResult>) -> Report {
+        Report::build(&finished(message, true, files))
+    }
+
+    #[test]
+    fn an_honest_run_has_no_mismatches() {
+        let report = with(
+            r#"{"files":[{"path":"a.rs","strategy":"merged","summary":"ok"}]}"#,
+            vec![file("a.rs", FileStatus::Resolved, Some(Strategy::Merged))],
+        );
+        assert!(report.mismatches().is_empty());
+    }
+
+    #[test]
+    fn claiming_a_file_that_is_still_conflicted_is_flagged() {
+        let report = with(
+            r#"{"files":[{"path":"a.rs","strategy":"merged","summary":"done"}]}"#,
+            vec![file("a.rs", FileStatus::MarkersRemain, None)],
+        );
+        assert_eq!(
+            report.mismatches(),
+            [Mismatch::ClaimedDoneButUnresolved {
+                path: "a.rs".into()
+            }]
+        );
+    }
+
+    #[test]
+    fn a_wrong_strategy_claim_is_flagged() {
+        let report = with(
+            r#"{"files":[{"path":"a.rs","strategy":"theirs","summary":"took theirs"}]}"#,
+            vec![file("a.rs", FileStatus::Resolved, Some(Strategy::Merged))],
+        );
+        assert_eq!(
+            report.mismatches(),
+            [Mismatch::StrategyDiffers {
+                path: "a.rs".into(),
+                claimed: Strategy::Theirs,
+                actual: Strategy::Merged
+            }]
+        );
+    }
+
+    #[test]
+    fn omitted_and_invented_files_are_flagged_only_when_there_is_a_summary() {
+        let report = with(
+            r#"{"files":[{"path":"a.rs","strategy":"ours","summary":"x"},{"path":"ghost.rs","summary":"y"}]}"#,
+            vec![
+                file("a.rs", FileStatus::Resolved, Some(Strategy::Ours)),
+                file("b.rs", FileStatus::Resolved, Some(Strategy::Ours)),
+            ],
+        );
+        let found = report.mismatches();
+        assert!(found.contains(&Mismatch::NotMentioned {
+            path: "b.rs".into()
+        }));
+        assert!(found.contains(&Mismatch::UnexpectedPath {
+            path: "ghost.rs".into()
+        }));
+
+        let no_summary = with(
+            "prose only",
+            vec![file("b.rs", FileStatus::Resolved, Some(Strategy::Ours))],
+        );
+        assert!(no_summary.mismatches().is_empty());
+    }
+
+    #[test]
+    fn a_commit_or_stray_edit_is_flagged_first() {
+        let mut run = finished(
+            "",
+            true,
+            vec![file("a.rs", FileStatus::Resolved, Some(Strategy::Ours))],
+        );
+        run.verification.head_moved = true;
+        run.verification.touched_outside = vec!["x.rs".into()];
+        let found = Report::build(&run).mismatches();
+        assert_eq!(found[0], Mismatch::HeadMoved);
+        assert_eq!(
+            found[1],
+            Mismatch::TouchedOutside {
+                paths: vec!["x.rs".into()]
+            }
+        );
+    }
+
+    #[test]
+    fn the_text_report_says_what_to_do_next_and_that_nothing_was_committed() {
+        let report = with(
+            r#"{"files":[{"path":"a.rs","strategy":"merged","summary":"kept both imports"}]}"#,
+            vec![file("a.rs", FileStatus::Resolved, Some(Strategy::Merged))],
+        );
+        let text = render::text(&report);
+        assert!(text.contains("1 of 1 file resolved"));
+        assert!(text.contains("a.rs"));
+        assert!(text.contains("merged both"));
+        assert!(text.contains("kept both imports"));
+        assert!(text.contains("git diff --staged"));
+        assert!(text.contains("git merge --continue"));
+        assert!(text.contains("Nothing was committed or pushed"));
+        assert!(!text.contains("Look closer"));
+    }
+
+    #[test]
+    fn unresolved_files_are_named_and_no_continue_hint_is_given() {
+        let report = with("", vec![file("a.rs", FileStatus::MarkersRemain, None)]);
+        let text = render::text(&report);
+        assert!(text.contains("conflict markers remain"));
+        assert!(text.contains("Still conflicted: a.rs"));
+        assert!(!text.contains("--continue"));
+    }
+
+    #[test]
+    fn a_failed_agent_shows_its_exit_code_and_stderr() {
+        let report = Report::build(&finished(
+            "",
+            false,
+            vec![file("a.rs", FileStatus::MarkersRemain, None)],
+        ));
+        let text = render::text(&report);
+        assert!(text.contains("did not finish cleanly (exit 1)"));
+        assert!(text.contains("line2"));
+    }
+
+    #[test]
+    fn without_a_summary_the_agents_own_words_are_shown() {
+        let report = with(
+            "I did it my way.",
+            vec![file("a.rs", FileStatus::Resolved, Some(Strategy::Ours))],
+        );
+        let text = render::text(&report);
+        assert!(text.contains("did not give a structured summary"));
+        assert!(text.contains("I did it my way."));
+    }
+
+    #[test]
+    fn json_includes_the_mismatches() {
+        let report = with(
+            "",
+            vec![file("a.rs", FileStatus::Resolved, Some(Strategy::Ours))],
+        );
+        let value: serde_json::Value = serde_json::from_str(&render::json(&report)).unwrap();
+        assert!(value["mismatches"].is_array());
+        assert_eq!(value["files"][0]["path"], "a.rs");
+    }
+}

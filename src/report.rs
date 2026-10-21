@@ -134,6 +134,74 @@ impl Report {
     }
 }
 
+/// A place where the agent's account and the verified facts disagree, or where something happened
+/// that the user should look at before trusting the result.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum Mismatch {
+    /// The agent described this file as handled, but it is still conflicted.
+    ClaimedDoneButUnresolved { path: String },
+    /// The agent said it took one approach; the content says another.
+    StrategyDiffers {
+        path: String,
+        claimed: Strategy,
+        actual: Strategy,
+    },
+    /// The agent gave a summary but never mentioned this file.
+    NotMentioned { path: String },
+    /// The agent's summary covers a file that was never in conflict.
+    UnexpectedPath { path: String },
+    /// The agent reported failure although every file is resolved.
+    ReportedFailureButResolved,
+    /// `HEAD` moved: the agent committed or changed history, which it was told not to.
+    HeadMoved,
+    /// Files outside the conflict changed.
+    TouchedOutside { paths: Vec<String> },
+}
+
+impl Report {
+    /// Everything worth a second look, most serious first.
+    pub fn mismatches(&self) -> Vec<Mismatch> {
+        let mut found = Vec::new();
+        if self.head_moved {
+            found.push(Mismatch::HeadMoved);
+        }
+        if !self.touched_outside.is_empty() {
+            found.push(Mismatch::TouchedOutside {
+                paths: self.touched_outside.clone(),
+            });
+        }
+        for file in &self.files {
+            if file.mentioned && file.status != FileStatus::Resolved {
+                found.push(Mismatch::ClaimedDoneButUnresolved {
+                    path: file.path.clone(),
+                });
+            }
+            if let (Some(claimed), Some(actual)) = (file.claimed, file.actual)
+                && claimed != actual
+            {
+                found.push(Mismatch::StrategyDiffers {
+                    path: file.path.clone(),
+                    claimed,
+                    actual,
+                });
+            }
+            if self.has_agent_summary && !file.mentioned {
+                found.push(Mismatch::NotMentioned {
+                    path: file.path.clone(),
+                });
+            }
+        }
+        for path in &self.unexpected_summary_paths {
+            found.push(Mismatch::UnexpectedPath { path: path.clone() });
+        }
+        if !self.agent_succeeded && self.all_resolved() && !self.files.is_empty() {
+            found.push(Mismatch::ReportedFailureButResolved);
+        }
+        found
+    }
+}
+
 /// The last `lines` lines of `text`.
 fn tail(text: &str, lines: usize) -> String {
     let all: Vec<&str> = text.lines().collect();
