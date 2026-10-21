@@ -9,6 +9,8 @@ above it, and make sure `Cargo.toml` carries the same version as the tag.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-21
+
 First release.
 
 ### Added
