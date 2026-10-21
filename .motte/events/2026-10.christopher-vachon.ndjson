@@ -1,0 +1,103 @@
+{"at":"2026-10-21T13:40:26Z","id":1,"by":"Christopher Vachon","as":"user","type":"created","title":"x","state":"Todo"}
+{"at":"2026-10-21T13:40:40Z","id":1,"by":"Christopher Vachon","as":"user","type":"title","from":"x","to":"Epic: Project scaffold and Rust toolchain"}
+{"at":"2026-10-21T13:40:40Z","id":2,"by":"Christopher Vachon","as":"user","type":"created","title":"Epic: Core library — conflict detection, agent adapters, run flow","state":"Todo"}
+{"at":"2026-10-21T13:40:40Z","id":3,"by":"Christopher Vachon","as":"user","type":"created","title":"Epic: User config in the home directory","state":"Todo"}
+{"at":"2026-10-21T13:40:40Z","id":4,"by":"Christopher Vachon","as":"user","type":"created","title":"Epic: Interactive CLI","state":"Todo"}
+{"at":"2026-10-21T13:40:40Z","id":5,"by":"Christopher Vachon","as":"user","type":"created","title":"Epic: Report summary","state":"Todo"}
+{"at":"2026-10-21T13:40:41Z","id":6,"by":"Christopher Vachon","as":"user","type":"created","title":"Epic: Self-update and install path (mirror merge-pipeline)","state":"Todo"}
+{"at":"2026-10-21T13:40:41Z","id":7,"by":"Christopher Vachon","as":"user","type":"created","title":"Epic: Release pipeline (GitHub Actions)","state":"Todo"}
+{"at":"2026-10-21T13:40:41Z","id":8,"by":"Christopher Vachon","as":"user","type":"created","title":"Epic: Docs, JSON schema and examples","state":"Todo"}
+{"at":"2026-10-21T13:41:12Z","id":9,"by":"Christopher Vachon","as":"user","type":"created","title":"Cargo skeleton: lib + bin, release profile, pinned toolchain","state":"Todo"}
+{"at":"2026-10-21T13:41:12Z","id":10,"by":"Christopher Vachon","as":"user","type":"created","title":"CI workflow: fmt, clippy, test on ubuntu and macos","state":"Todo"}
+{"at":"2026-10-21T13:41:13Z","id":11,"by":"Christopher Vachon","as":"user","type":"created","title":"Repo hygiene: .gitignore, AGENTS.md cargo notes, test fixtures helper","state":"Todo"}
+{"at":"2026-10-21T13:41:13Z","id":12,"by":"Christopher Vachon","as":"user","type":"created","title":"Git wrapper over std::process::Command","state":"Todo"}
+{"at":"2026-10-21T13:41:13Z","id":13,"by":"Christopher Vachon","as":"user","type":"created","title":"Conflict state detection (merge, rebase, cherry-pick, revert, stash pop)","state":"Todo"}
+{"at":"2026-10-21T13:41:13Z","id":14,"by":"Christopher Vachon","as":"user","type":"created","title":"Agent trait and the Claude Code adapter","state":"Todo"}
+{"at":"2026-10-21T13:41:13Z","id":15,"by":"Christopher Vachon","as":"user","type":"created","title":"Codex adapter (sandboxed, no approval prompts)","state":"Todo"}
+{"at":"2026-10-21T13:41:13Z","id":16,"by":"Christopher Vachon","as":"user","type":"created","title":"Model discovery: Codex catalog plus config lists","state":"Todo"}
+{"at":"2026-10-21T13:41:14Z","id":17,"by":"Christopher Vachon","as":"user","type":"created","title":"Post-run verifier and stager","state":"Todo"}
+{"at":"2026-10-21T13:41:14Z","id":18,"by":"Christopher Vachon","as":"user","type":"created","title":"Runner: orchestrate detect, prompt, agent, verify, report","state":"Todo"}
+{"at":"2026-10-21T13:41:14Z","id":19,"by":"Christopher Vachon","as":"user","type":"created","title":"Config file schema, loading and defaults","state":"Todo"}
+{"at":"2026-10-21T13:41:14Z","id":20,"by":"Christopher Vachon","as":"user","type":"created","title":"Prompt template with placeholders and the built-in default prompt","state":"Todo"}
+{"at":"2026-10-21T13:41:14Z","id":21,"by":"Christopher Vachon","as":"user","type":"created","title":"config path / init / doctor subcommands","state":"Todo"}
+{"at":"2026-10-21T13:41:15Z","id":22,"by":"Christopher Vachon","as":"user","type":"created","title":"Clap command surface and flags","state":"Todo"}
+{"at":"2026-10-21T13:41:15Z","id":23,"by":"Christopher Vachon","as":"user","type":"created","title":"Prompter: agent select, model select, prompt edit, confirm","state":"Todo"}
+{"at":"2026-10-21T13:41:15Z","id":24,"by":"Christopher Vachon","as":"user","type":"created","title":"Wire the interactive flow end to end","state":"Todo"}
+{"at":"2026-10-21T13:41:15Z","id":25,"by":"Christopher Vachon","as":"user","type":"created","title":"End-to-end CLI tests with a fake agent binary","state":"Todo"}
+{"at":"2026-10-21T13:41:15Z","id":26,"by":"Christopher Vachon","as":"user","type":"created","title":"Report data model and collection","state":"Todo"}
+{"at":"2026-10-21T13:41:16Z","id":27,"by":"Christopher Vachon","as":"user","type":"created","title":"Parse the agent's structured summary (schema + tolerant fallback)","state":"Todo"}
+{"at":"2026-10-21T13:41:16Z","id":28,"by":"Christopher Vachon","as":"user","type":"created","title":"Render the summary and flag claim/fact mismatches","state":"Todo"}
+{"at":"2026-10-21T13:41:16Z","id":29,"by":"Christopher Vachon","as":"user","type":"created","title":"Install layout module (host, target, locate install, version ordering)","state":"Todo"}
+{"at":"2026-10-21T13:41:16Z","id":30,"by":"Christopher Vachon","as":"user","type":"created","title":"Release lookup against the GitHub API","state":"Todo"}
+{"at":"2026-10-21T13:41:16Z","id":31,"by":"Christopher Vachon","as":"user","type":"created","title":"Download, verify, install, prune","state":"Todo"}
+{"at":"2026-10-21T13:41:16Z","id":32,"by":"Christopher Vachon","as":"user","type":"created","title":"upgrade, uninstall, versions, use, prune subcommands","state":"Todo"}
+{"at":"2026-10-21T13:41:17Z","id":33,"by":"Christopher Vachon","as":"user","type":"created","title":"install.sh and install.ps1","state":"Todo"}
+{"at":"2026-10-21T13:41:17Z","id":34,"by":"Christopher Vachon","as":"user","type":"created","title":"Daily update offer at startup","state":"Todo"}
+{"at":"2026-10-21T13:41:17Z","id":35,"by":"Christopher Vachon","as":"user","type":"created","title":"Build matrix producing gzipped assets per target","state":"Todo"}
+{"at":"2026-10-21T13:41:17Z","id":36,"by":"Christopher Vachon","as":"user","type":"created","title":"Gate job: tag equals Cargo version, fmt, clippy, tests","state":"Todo"}
+{"at":"2026-10-21T13:41:17Z","id":37,"by":"Christopher Vachon","as":"user","type":"created","title":"Verify job: checksums.txt and installer smoke tests on built assets","state":"Todo"}
+{"at":"2026-10-21T13:41:17Z","id":38,"by":"Christopher Vachon","as":"user","type":"created","title":"Publish job and first tagged release (v0.1.0)","state":"Todo"}
+{"at":"2026-10-21T13:41:18Z","id":39,"by":"Christopher Vachon","as":"user","type":"created","title":"README: install, usage, config, flags, upgrade","state":"Todo"}
+{"at":"2026-10-21T13:41:18Z","id":40,"by":"Christopher Vachon","as":"user","type":"created","title":"Publish config JSON schema and examples/config","state":"Todo"}
+{"at":"2026-10-21T13:41:18Z","id":41,"by":"Christopher Vachon","as":"user","type":"created","title":"mdBook site on GitHub Pages plus CI book job","state":"Todo"}
+{"at":"2026-10-21T13:41:18Z","id":42,"by":"Christopher Vachon","as":"user","type":"created","title":"CHANGELOG and release notes template","state":"Todo"}
+{"at":"2026-10-21T13:41:28Z","id":10,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":9}
+{"at":"2026-10-21T13:41:28Z","id":11,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":9}
+{"at":"2026-10-21T13:41:28Z","id":12,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":9}
+{"at":"2026-10-21T13:41:29Z","id":13,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":12}
+{"at":"2026-10-21T13:41:29Z","id":13,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":11}
+{"at":"2026-10-21T13:41:29Z","id":14,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":9}
+{"at":"2026-10-21T13:41:29Z","id":15,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":9}
+{"at":"2026-10-21T13:41:29Z","id":16,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":14}
+{"at":"2026-10-21T13:41:29Z","id":16,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":15}
+{"at":"2026-10-21T13:41:30Z","id":17,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":12}
+{"at":"2026-10-21T13:41:30Z","id":17,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":11}
+{"at":"2026-10-21T13:41:30Z","id":18,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":13}
+{"at":"2026-10-21T13:41:30Z","id":18,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":14}
+{"at":"2026-10-21T13:41:30Z","id":18,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":15}
+{"at":"2026-10-21T13:41:30Z","id":18,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":17}
+{"at":"2026-10-21T13:41:30Z","id":18,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":19}
+{"at":"2026-10-21T13:41:31Z","id":18,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":20}
+{"at":"2026-10-21T13:41:31Z","id":19,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":9}
+{"at":"2026-10-21T13:41:31Z","id":20,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":19}
+{"at":"2026-10-21T13:41:31Z","id":21,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":19}
+{"at":"2026-10-21T13:41:31Z","id":21,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":20}
+{"at":"2026-10-21T13:41:31Z","id":21,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":22}
+{"at":"2026-10-21T13:41:32Z","id":22,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":9}
+{"at":"2026-10-21T13:41:32Z","id":23,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":22}
+{"at":"2026-10-21T13:41:32Z","id":23,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":16}
+{"at":"2026-10-21T13:41:32Z","id":24,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":18}
+{"at":"2026-10-21T13:41:32Z","id":24,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":23}
+{"at":"2026-10-21T13:41:32Z","id":24,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":28}
+{"at":"2026-10-21T13:41:32Z","id":25,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":24}
+{"at":"2026-10-21T13:41:33Z","id":26,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":17}
+{"at":"2026-10-21T13:41:33Z","id":27,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":14}
+{"at":"2026-10-21T13:41:33Z","id":27,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":15}
+{"at":"2026-10-21T13:41:33Z","id":28,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":26}
+{"at":"2026-10-21T13:41:33Z","id":28,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":27}
+{"at":"2026-10-21T13:41:33Z","id":29,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":9}
+{"at":"2026-10-21T13:41:33Z","id":30,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":29}
+{"at":"2026-10-21T13:41:34Z","id":31,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":29}
+{"at":"2026-10-21T13:41:34Z","id":31,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":30}
+{"at":"2026-10-21T13:41:34Z","id":32,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":31}
+{"at":"2026-10-21T13:41:34Z","id":33,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":29}
+{"at":"2026-10-21T13:41:34Z","id":34,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":32}
+{"at":"2026-10-21T13:41:34Z","id":35,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":9}
+{"at":"2026-10-21T13:41:34Z","id":36,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":10}
+{"at":"2026-10-21T13:41:35Z","id":37,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":35}
+{"at":"2026-10-21T13:41:35Z","id":37,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":33}
+{"at":"2026-10-21T13:41:35Z","id":38,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":36}
+{"at":"2026-10-21T13:41:35Z","id":38,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":37}
+{"at":"2026-10-21T13:41:35Z","id":39,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":24}
+{"at":"2026-10-21T13:41:35Z","id":40,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":19}
+{"at":"2026-10-21T13:41:35Z","id":41,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":39}
+{"at":"2026-10-21T13:41:35Z","id":42,"by":"Christopher Vachon","as":"user","type":"blocked","blocker":9}
+{"at":"2026-10-21T13:41:58Z","id":9,"by":"Christopher Vachon","as":"user","type":"state","from":"Todo","to":"In Progress"}
+{"at":"2026-10-21T13:41:58Z","id":9,"by":"Christopher Vachon","as":"user","type":"assigned","from":null,"to":"Christopher Vachon"}
+{"at":"2026-10-21T13:42:44Z","id":9,"by":"Christopher Vachon","as":"user","type":"state","from":"In Progress","to":"Done"}
+{"at":"2026-10-21T13:43:35Z","id":11,"by":"Christopher Vachon","as":"user","type":"state","from":"Todo","to":"In Progress"}
+{"at":"2026-10-21T13:43:35Z","id":11,"by":"Christopher Vachon","as":"user","type":"assigned","from":null,"to":"Christopher Vachon"}
+{"at":"2026-10-21T13:44:10Z","id":11,"by":"Christopher Vachon","as":"user","type":"state","from":"In Progress","to":"Done"}
+{"at":"2026-10-21T13:44:51Z","id":12,"by":"Christopher Vachon","as":"user","type":"state","from":"Todo","to":"In Progress"}
+{"at":"2026-10-21T13:44:51Z","id":12,"by":"Christopher Vachon","as":"user","type":"assigned","from":null,"to":"Christopher Vachon"}
+{"at":"2026-10-21T13:45:59Z","id":12,"by":"Christopher Vachon","as":"user","type":"state","from":"In Progress","to":"Done"}
