@@ -1,0 +1,142 @@
+//! Managed install layout, release lookup, download/verify, upgrade and uninstall.
+//!
+//! This mirrors motte's install contract so both tools behave identically on a machine:
+//!
+//! ```text
+//! <root>/versions/v<X.Y.Z>/bin/resolve-merge-conflicts   the binary
+//! <root>/current -> versions/v<X.Y.Z>           the active version
+//! <bin>/resolve-merge-conflicts -> <root>/current/bin/resolve-merge-conflicts
+//! <root>/update-check.json                      when we last looked for a release
+//! ```
+//!
+//! `<root>` is `~/.resolve-merge-conflicts` unless `RESOLVE_MERGE_CONFLICTS_INSTALL_DIR` says otherwise, and `<bin>`
+//! is `~/.local/bin` unless `RESOLVE_MERGE_CONFLICTS_BIN_DIR` says otherwise. `install.sh` and `install.ps1`
+//! implement the same layout; `layout::tests` reads `install.sh` to make sure they agree.
+
+pub mod download;
+pub mod layout;
+pub mod releases;
+pub mod update_prompt;
+pub mod upgrade;
+pub mod versions;
+
+use std::io::Write;
+
+pub use download::{
+    DownloadError, PruneResult, fetch_verified_binary, install_binary, prune_versions,
+};
+pub use layout::{
+    Arch, BIN_NAME, HostTarget, ManagedInstall, Platform, REPO, UnsupportedHostError,
+    download_base, host_target, install_root, installed_versions, locate_install,
+    normalize_version,
+};
+pub use releases::{ReleaseError, resolve_latest_version};
+pub use upgrade::{UninstallOptions, UpgradeContext, UpgradeError, UpgradeOptions};
+pub use versions::{
+    Kept, ListOptions, PruneOptions, RemoveOptions, RemoveReport, Switched, UseOptions,
+    VersionEntry, VersionsError,
+};
+
+use crate::cli::{UninstallArgs, UpgradeArgs, UseArgs, VersionsArgs, VersionsCommand};
+
+impl From<&UpgradeArgs> for UpgradeOptions {
+    fn from(args: &UpgradeArgs) -> Self {
+        Self {
+            target: args.target.clone(),
+            check: args.check,
+            keep: Some(args.keep),
+            force: args.force,
+            json: args.json,
+        }
+    }
+}
+
+impl From<&UninstallArgs> for UninstallOptions {
+    fn from(args: &UninstallArgs) -> Self {
+        Self {
+            yes: args.yes,
+            json: args.json,
+        }
+    }
+}
+
+/// Exit the process with `code` when it is non-zero, flushing stdout first.
+///
+/// `uninstall` without `--yes` reports what it would do and exits 1 without that being an
+/// error, so it cannot travel back through `anyhow::Result` without being printed as one.
+fn finish(code: i32) -> anyhow::Result<()> {
+    if code != 0 {
+        let _ = std::io::stdout().flush();
+        std::process::exit(code);
+    }
+    Ok(())
+}
+
+/// `resolve-merge-conflicts upgrade`: entry point used by `main`.
+pub fn run_upgrade(args: &UpgradeArgs) -> anyhow::Result<()> {
+    let options = UpgradeOptions::from(args);
+    let code = upgrade::run_upgrade(&options, &mut std::io::stdout())?;
+    finish(code)
+}
+
+/// `resolve-merge-conflicts uninstall`: entry point used by `main`.
+pub fn run_uninstall(args: &UninstallArgs) -> anyhow::Result<()> {
+    let options = UninstallOptions::from(args);
+    let code = upgrade::run_uninstall(&options, &mut std::io::stdout())?;
+    finish(code)
+}
+
+/// `resolve-merge-conflicts versions [remove|prune]`: entry point used by `main`.
+pub fn run_versions(args: &VersionsArgs) -> anyhow::Result<()> {
+    let out = &mut std::io::stdout();
+    let code = match &args.command {
+        None => {
+            let ctx = UpgradeContext::detect()?;
+            versions::run_list_with(
+                &ListOptions {
+                    check: args.check,
+                    json: args.json,
+                },
+                &ctx,
+                out,
+            )?
+        }
+        Some(VersionsCommand::Remove { versions, json }) => {
+            let install = locate_install().ok_or(UpgradeError::NotInstalled)?;
+            versions::run_remove_with(
+                &RemoveOptions {
+                    versions: versions.clone(),
+                    json: *json,
+                },
+                &install,
+                out,
+            )?
+        }
+        Some(VersionsCommand::Prune { keep, json }) => {
+            let install = locate_install().ok_or(UpgradeError::NotInstalled)?;
+            versions::run_prune_with(
+                &PruneOptions {
+                    keep: *keep,
+                    json: *json,
+                },
+                &install,
+                out,
+            )?
+        }
+    };
+    finish(code)
+}
+
+/// `resolve-merge-conflicts use <version>`: entry point used by `main`.
+pub fn run_use(args: &UseArgs) -> anyhow::Result<()> {
+    let ctx = UpgradeContext::detect()?;
+    let code = versions::run_use_with(
+        &UseOptions {
+            version: args.version.clone(),
+            json: args.json,
+        },
+        &ctx,
+        &mut std::io::stdout(),
+    )?;
+    finish(code)
+}

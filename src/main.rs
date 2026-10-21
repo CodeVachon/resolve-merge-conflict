@@ -9,6 +9,16 @@ fn main() {
 
     let result = match cli.command {
         None => cli::run_interactive(&cli.run),
+        Some(Command::Upgrade(args)) => {
+            resolve_merge_conflicts::selfupdate::run_upgrade(&args).map(|()| 0)
+        }
+        Some(Command::Versions(args)) => {
+            resolve_merge_conflicts::selfupdate::run_versions(&args).map(|()| 0)
+        }
+        Some(Command::Use(args)) => resolve_merge_conflicts::selfupdate::run_use(&args).map(|()| 0),
+        Some(Command::Uninstall(args)) => {
+            resolve_merge_conflicts::selfupdate::run_uninstall(&args).map(|()| 0)
+        }
         Some(Command::Completion { shell }) => {
             cli::print_completion(shell);
             Ok(0)

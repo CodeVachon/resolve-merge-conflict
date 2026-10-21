@@ -8,6 +8,8 @@ use crate::config;
 use crate::render;
 use crate::report::Report;
 use crate::runner::{self, Deps, Outcome};
+use crate::selfupdate::UpgradeContext;
+use crate::selfupdate::update_prompt::{self, Offer};
 use crate::ui;
 
 /// Run the tool for `args`; returns the process exit code.
@@ -51,6 +53,9 @@ fn run(args: &RunArgs) -> Result<i32> {
     }
 
     let mut prompter = InquirePrompter::new(loaded.config.editor.clone(), quiet);
+    if !quiet {
+        maybe_offer_update(args, &mut prompter)?;
+    }
     let outcome = runner::run(&options, &loaded.config, &mut prompter, &Deps::real())?;
 
     match outcome {
@@ -99,4 +104,70 @@ fn run(args: &RunArgs) -> Result<i32> {
             Ok(if ok { 0 } else { 1 })
         }
     }
+}
+
+/// Once a day, offer to update before anything else happens, so the run that follows is on the new
+/// version.
+///
+/// Only asked where it can act and be answered: a managed install, on a terminal (or with
+/// `--yes`, which answers without one). A dev build, a pipe, or the opt-out variables skip it
+/// silently. On yes the process re-executes on the new binary with the same arguments; if that
+/// fails, or the upgrade itself fails, the run continues on this version with a warning.
+fn maybe_offer_update(args: &RunArgs, prompter: &mut InquirePrompter) -> Result<()> {
+    /// `--yes` answers the offer with its default (update) without needing a terminal.
+    struct AssumeDefault;
+    impl update_prompt::Confirm for AssumeDefault {
+        fn confirm(&mut self, _key: &str, _message: &str, default: bool) -> Result<bool> {
+            Ok(default)
+        }
+    }
+
+    if update_prompt::disabled() {
+        return Ok(());
+    }
+    if !args.yes && !prompter::is_interactive() {
+        return Ok(());
+    }
+    // Not managed (or an unsupported host): nothing could be installed, so nothing is asked.
+    let Ok(ctx) = UpgradeContext::detect() else {
+        return Ok(());
+    };
+
+    let offer = if args.yes {
+        update_prompt::offer_update(&ctx, &mut AssumeDefault, &mut std::io::stdout())?
+    } else {
+        update_prompt::offer_update(&ctx, prompter, &mut std::io::stdout())?
+    };
+    match offer {
+        Offer::NotDue | Offer::NothingNewer => {}
+        Offer::Declined { .. } => {
+            println!(
+                "{}",
+                ui::dim("skipping; run resolve-merge-conflicts upgrade any time")
+            );
+        }
+        Offer::Failed { latest, error } => {
+            eprintln!(
+                "{} could not update to {latest}: {error}",
+                ui::red("warning:")
+            );
+            eprintln!(
+                "{}",
+                ui::dim("continuing on this version; run resolve-merge-conflicts upgrade any time")
+            );
+        }
+        Offer::Upgraded { to, binary } => {
+            println!();
+            let error = update_prompt::reexec(&binary);
+            eprintln!(
+                "{} installed {to} but could not restart on it: {error}",
+                ui::red("warning:")
+            );
+            eprintln!(
+                "{}",
+                ui::dim("continuing on this version; the next command will use the new one")
+            );
+        }
+    }
+    Ok(())
 }

@@ -125,11 +125,100 @@ pub enum Command {
         #[command(subcommand)]
         command: ConfigCommand,
     },
+    /// Update resolve-merge-conflicts in place, or check whether an update is available
+    Upgrade(UpgradeArgs),
+    /// List installed versions; `remove` and `prune` delete old ones
+    Versions(VersionsArgs),
+    /// Switch to an installed version, downloading it first if needed
+    Use(UseArgs),
+    /// Remove the managed installation from this machine
+    Uninstall(UninstallArgs),
     /// Print a shell completion script
     Completion {
         /// bash, zsh, fish, elvish or powershell
         shell: Shell,
     },
+}
+
+#[derive(Debug, Clone, Default, Args)]
+pub struct UpgradeArgs {
+    /// Install this version instead of the newest
+    pub target: Option<String>,
+
+    /// Report whether an update is available, changing nothing
+    #[arg(long)]
+    pub check: bool,
+
+    /// How many versions to keep on disk
+    #[arg(long, default_value_t = 2, value_name = "N")]
+    pub keep: usize,
+
+    /// Reinstall even if already on the target version
+    #[arg(long)]
+    pub force: bool,
+
+    /// Machine-readable output
+    #[arg(long)]
+    pub json: bool,
+}
+
+/// `versions`: the list by default, or one of its subcommands.
+#[derive(Debug, Clone, Default, Args)]
+pub struct VersionsArgs {
+    #[command(subcommand)]
+    pub command: Option<VersionsCommand>,
+
+    /// Ask GitHub for the newest release instead of using the last check's result
+    #[arg(long)]
+    pub check: bool,
+
+    /// Machine-readable output
+    #[arg(long)]
+    pub json: bool,
+}
+
+#[derive(Debug, Clone, Subcommand)]
+pub enum VersionsCommand {
+    /// Delete installed versions (never the active one or the one running)
+    Remove {
+        /// Versions to delete, e.g. 0.1.0 or v0.1.0
+        #[arg(required = true, value_name = "VERSION")]
+        versions: Vec<String>,
+        /// Machine-readable output
+        #[arg(long)]
+        json: bool,
+    },
+    /// Delete all but the newest N versions (never the active one or the one running)
+    Prune {
+        /// How many versions to keep on disk
+        #[arg(long, default_value_t = 2, value_name = "N")]
+        keep: usize,
+        /// Machine-readable output
+        #[arg(long)]
+        json: bool,
+    },
+}
+
+#[derive(Debug, Clone, Default, Args)]
+pub struct UseArgs {
+    /// Version to switch to, e.g. 0.2.0 or v0.2.0
+    #[arg(value_name = "VERSION")]
+    pub version: String,
+
+    /// Machine-readable output
+    #[arg(long)]
+    pub json: bool,
+}
+
+#[derive(Debug, Clone, Default, Args)]
+pub struct UninstallArgs {
+    /// Skip the confirmation
+    #[arg(short = 'y', long)]
+    pub yes: bool,
+
+    /// Machine-readable output
+    #[arg(long)]
+    pub json: bool,
 }
 
 #[derive(Subcommand, Debug)]

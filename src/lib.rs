@@ -13,6 +13,7 @@ pub mod prompt;
 pub mod render;
 pub mod report;
 pub mod runner;
+pub mod selfupdate;
 pub mod summary;
 pub mod ui;
 pub mod verify;
