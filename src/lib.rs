@@ -4,6 +4,7 @@
 //! implementation serves the interactive CLI (`src/main.rs`) and the tests.
 
 pub mod agent;
+pub mod conflicts;
 pub mod git;
 
 /// The version reported by `--version`, baked in from Cargo.toml at compile time.
