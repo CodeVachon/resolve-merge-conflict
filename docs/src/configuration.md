@@ -34,7 +34,7 @@ resolve-merge-conflicts config doctor   # validates it; exit 1 if a run would fa
 | `agent`      | `claude` or `codex`; preselected in the picker, and what `--yes` uses when both are installed |
 | `prompt`     | The prompt template, inline                                                                   |
 | `promptFile` | The prompt template in a file (relative to the config file; `~` allowed). Wins over `prompt`  |
-| `editor`     | Command for amending the prompt, e.g. `code --wait`. Default: `$VISUAL`, then `$EDITOR`       |
+| `editor`     | Command for amending the prompt, e.g. `code --wait`. Default: `$VISUAL`, then `$EDITOR`, then `vi` |
 | `autoStage`  | `git add` resolved files afterwards. Default `true`                                           |
 | `claude`, `codex` | `model` (preselected) and `models` (offered in the picker)                               |
 

@@ -30,7 +30,7 @@
     },
     "editor": {
       "title": "Editor for amending the prompt",
-      "description": "Command (with arguments) used when you choose to edit the prompt, e.g. \"code --wait\". Defaults to $VISUAL, then $EDITOR.",
+      "description": "Command (with arguments) used when you choose to edit the prompt, e.g. \"code --wait\". Defaults to $VISUAL, then $EDITOR, then vi.",
       "type": "string"
     },
     "autoStage": {

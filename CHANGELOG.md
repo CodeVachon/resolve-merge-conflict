@@ -9,6 +9,10 @@ above it, and make sure `Cargo.toml` carries the same version as the tag.
 
 ## [Unreleased]
 
+### Changed
+
+- Amending the prompt now opens `vi` when neither the config's `editor`, `$VISUAL` nor `$EDITOR` is set, instead of nano.
+
 ## [0.1.0] - 2026-10-21
 
 First release.

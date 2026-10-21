@@ -36,7 +36,7 @@ pub struct InquirePrompter {
 }
 
 impl InquirePrompter {
-    /// `editor` is the config's `editor`; otherwise `$VISUAL`, then `$EDITOR`.
+    /// `editor` is the config's `editor`; otherwise `$VISUAL`, then `$EDITOR`, then `vi`.
     pub fn new(editor: Option<String>, to_stderr: bool) -> Self {
         Self { editor, to_stderr }
     }
@@ -48,6 +48,22 @@ impl InquirePrompter {
             println!("{text}");
         }
     }
+}
+
+/// The editor to open the prompt in: the config's `editor`, else `$VISUAL`, else `$EDITOR`, else
+/// `vi`. inquire's own fallback is nano, which is not what anyone who has not set `$EDITOR` expects.
+pub fn resolve_editor(
+    configured: Option<&str>,
+    visual: Option<&str>,
+    editor: Option<&str>,
+) -> String {
+    [configured, visual, editor]
+        .into_iter()
+        .flatten()
+        .map(str::trim)
+        .find(|command| !command.is_empty())
+        .unwrap_or("vi")
+        .to_string()
 }
 
 /// `"code --wait"` as a program and its arguments.
@@ -86,13 +102,18 @@ impl Prompter for InquirePrompter {
         let mut editor = Editor::new(question)
             .with_predefined_text(initial)
             .with_file_extension(".md");
-        let parsed = self.editor.as_deref().and_then(split_editor);
-        if let Some((program, args)) = &parsed {
-            let args: Vec<&std::ffi::OsStr> = args.iter().map(|arg| arg.as_os_str()).collect();
-            editor = editor.with_editor_command(program).with_args(&args);
-            return editor.prompt().map_err(map_error);
-        }
-        editor.prompt().map_err(map_error)
+        let command = resolve_editor(
+            self.editor.as_deref(),
+            std::env::var("VISUAL").ok().as_deref(),
+            std::env::var("EDITOR").ok().as_deref(),
+        );
+        let (program, args) = split_editor(&command).expect("resolve_editor never returns blank");
+        let args: Vec<&std::ffi::OsStr> = args.iter().map(|arg| arg.as_os_str()).collect();
+        editor
+            .with_editor_command(&program)
+            .with_args(&args)
+            .prompt()
+            .map_err(map_error)
     }
 
     fn show(&mut self, title: &str, body: &str) {
@@ -118,6 +139,25 @@ mod tests {
         assert_eq!(program, "code");
         assert_eq!(args, ["--wait", "--new-window"]);
         assert!(split_editor("   ").is_none());
+    }
+
+    #[test]
+    fn the_editor_falls_back_to_vi_not_nano() {
+        assert_eq!(resolve_editor(None, None, None), "vi");
+        assert_eq!(resolve_editor(Some(" "), Some(""), None), "vi");
+    }
+
+    #[test]
+    fn config_beats_visual_beats_editor() {
+        assert_eq!(
+            resolve_editor(Some("nvim"), Some("code -w"), Some("emacs")),
+            "nvim"
+        );
+        assert_eq!(
+            resolve_editor(None, Some("code -w"), Some("emacs")),
+            "code -w"
+        );
+        assert_eq!(resolve_editor(None, None, Some("emacs")), "emacs");
     }
 
     #[test]
