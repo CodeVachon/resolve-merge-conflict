@@ -4,6 +4,7 @@
 //! implementation serves the interactive CLI (`src/main.rs`) and the tests.
 
 pub mod agent;
+pub mod cli;
 pub mod config;
 pub mod conflicts;
 pub mod git;
