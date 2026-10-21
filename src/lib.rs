@@ -7,6 +7,7 @@ pub mod agent;
 pub mod config;
 pub mod conflicts;
 pub mod git;
+pub mod models;
 pub mod prompt;
 pub mod verify;
 
