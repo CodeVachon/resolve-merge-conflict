@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/CodeVachon/resolve-merge-conflict/main/schema/config.json",
+  "title": "resolve-merge-conflicts config",
+  "description": "Defaults for resolve-merge-conflicts: which agent and model to preselect, which models to offer, and the prompt sent to the agent. Every field is optional.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "title": "Schema reference",
+      "description": "Lets editors validate this file. Point it at the published schema URL.",
+      "type": "string"
+    },
+    "agent": {
+      "title": "Default agent",
+      "description": "Preselected in the agent picker, and used by --yes when more than one agent is installed.",
+      "type": "string",
+      "enum": ["claude", "codex"]
+    },
+    "prompt": {
+      "title": "Prompt template",
+      "description": "The prompt sent to the agent. Placeholders: {{files}}, {{operation}}, {{ours}}, {{theirs}}, {{branch}}, {{summary_format}}. Ignored when promptFile is set. For anything longer than a line or two, prefer promptFile.",
+      "type": "string",
+      "minLength": 1
+    },
+    "promptFile": {
+      "title": "Prompt template file",
+      "description": "A file holding the prompt template. Relative paths resolve against the directory of this config file; a leading ~ is the home directory. Takes precedence over prompt.",
+      "type": "string",
+      "minLength": 1
+    },
+    "editor": {
+      "title": "Editor for amending the prompt",
+      "description": "Command (with arguments) used when you choose to edit the prompt, e.g. \"code --wait\". Defaults to $VISUAL, then $EDITOR.",
+      "type": "string"
+    },
+    "autoStage": {
+      "title": "Stage resolved files",
+      "description": "Run git add on files the agent resolved. Files that still contain conflict markers are never staged. Nothing is ever committed.",
+      "type": "boolean",
+      "default": true
+    },
+    "claude": { "$ref": "#/definitions/agent" },
+    "codex": { "$ref": "#/definitions/agent" }
+  },
+  "definitions": {
+    "agent": {
+      "title": "Agent settings",
+      "type": "object",
+      "properties": {
+        "model": {
+          "title": "Default model",
+          "description": "Preselected in the model picker. For claude the default is \"sonnet\"; for codex, the best model its catalog lists.",
+          "type": "string",
+          "minLength": 1
+        },
+        "models": {
+          "title": "Models to offer",
+          "description": "Shown in the model picker. For claude this is the whole list (defaults: opus, sonnet, haiku); codex discovers its own and these are added to it, or used alone if discovery fails.",
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

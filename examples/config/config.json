@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/CodeVachon/resolve-merge-conflict/main/schema/config.json",
+  "agent": "claude",
+  "autoStage": true,
+  "promptFile": "prompt.md",
+  "editor": "code --wait",
+  "claude": {
+    "model": "sonnet",
+    "models": ["opus", "sonnet", "haiku"]
+  },
+  "codex": {
+    "model": "gpt-6.1-sol",
+    "models": ["gpt-6.1-sol", "gpt-6-astra"]
+  }
+}

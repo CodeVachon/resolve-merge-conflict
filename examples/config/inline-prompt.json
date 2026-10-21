@@ -1,0 +1,5 @@
+{
+  "$schema": "https://raw.githubusercontent.com/CodeVachon/resolve-merge-conflict/main/schema/config.json",
+  "agent": "codex",
+  "prompt": "Resolve the git {{operation}} conflicts in:\n{{files}}\n\nPrefer \"theirs\" for lockfiles and keep both sides' changes everywhere else. Do not run any git commands that change state.\n\n{{summary_format}}"
+}
